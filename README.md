@@ -6,6 +6,6 @@
 #### 使用方法
 参照test
 
-####求支持
+#### 求支持
 如果这个脚本让你省去了一些时间, 不如打赏一下
-![](http://ww1.sinaimg.cn/large/006tNc79ly1g5c7kc6tixj30u014qwiw.jpg)
+<img src="http://ww1.sinaimg.cn/large/006tNc79ly1g5c7kc6tixj30u014qwiw.jpg" width="414" hegiht="562" align=center />
