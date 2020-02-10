@@ -16,6 +16,8 @@ class Rosetta(object):
 
     def _is_normal_char(self, char):
         if len(char) <= 1:
+            if self._is_emoji(char):
+                return True
             if ord(char) < 0x9FEF:
                 return True
             else:
@@ -25,6 +27,20 @@ class Rosetta(object):
         else:
             if any([ord(c) < 0x9FEF for c in char]):
                 return True
+
+    def _is_emoji(self, content):
+        if not content:
+            return False
+        if u"\U0001F600" <= content and content <= u"\U0001F64F":
+            return True
+        elif u"\U0001F300" <= content and content <= u"\U0001F5FF":
+            return True
+        elif u"\U0001F680" <= content and content <= u"\U0001F6FF":
+            return True
+        elif u"\U0001F1E0" <= content and content <= u"\U0001F1FF":
+            return True
+        else:
+            return False
 
     def _get_chinese_char(self, chr):
         uni_chr = (b'uni' + chr.replace(b' ', b'').replace(b'\\n', b'').replace(b'\\t', b'').replace(b'\\u', b'')).decode()
