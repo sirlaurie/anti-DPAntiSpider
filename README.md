@@ -5,8 +5,3 @@
 
 #### 使用方法
 参照test
-
-#### 求支持
-如果这个脚本让你省去了一些时间, 不如打赏一下
-
-<img src="http://ww1.sinaimg.cn/large/006tNc79ly1g5c7kc6tixj30u014qwiw.jpg" width="310.5" hegiht="421.5" align=center />
