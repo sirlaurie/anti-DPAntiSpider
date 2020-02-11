@@ -31,13 +31,7 @@ class Rosetta(object):
     def _is_emoji(self, content):
         if not content:
             return False
-        if u"\U0001F600" <= content and content <= u"\U0001F64F":
-            return True
-        elif u"\U0001F300" <= content and content <= u"\U0001F5FF":
-            return True
-        elif u"\U0001F680" <= content and content <= u"\U0001F6FF":
-            return True
-        elif u"\U0001F1E0" <= content and content <= u"\U0001F1FF":
+        elif u"\U0001F300" <= content and content <= u"\U0001F9EF":
             return True
         else:
             return False
