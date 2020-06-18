@@ -3,7 +3,7 @@
 # @author: loricheung
 import re
 from parsel import Selector
-from util import request_html, css_pattern, svg_pattern
+from util import request_html, css_pattern
 
 
 class Svgdetect(object):
@@ -22,17 +22,17 @@ class Svgdetect(object):
         css = css_pattern.search(self.html)
         if css:
             css_url = css.group()
-            self._css_content = request_html('http:' + css_url, sleep=0)
-            self.class_prefix = self._sel.xpath('//svgmtsi/@class').get()[:2]
-            svg_url = re.search(r'svgmtsi.*?url\((.*?)\)', self._css_content).group(1)
-            if (svg_url.startswith('//s3plus') and svg_url.endswith('.svg')):
-                svg_content = request_html('http:' + svg_url)
+            self._css_content = request_html("http:" + css_url, sleep=0)
+            self.class_prefix = self._sel.xpath("//svgmtsi/@class").get()[:2]
+            svg_url = re.search(r"svgmtsi.*?url\((.*?)\)", self._css_content).group(1)
+            if svg_url.startswith("//s3plus") and svg_url.endswith(".svg"):
+                svg_content = request_html("http:" + svg_url)
                 self._svg_sel = Selector(svg_content)
             else:
-                print('Error: No svg link found!')
+                print("Error: No svg link found!")
                 exit()
         else:
-            print('Error: No css link found!')
+            print("Error: No css link found!")
             exit()
 
     def _svg_a(self):
@@ -40,28 +40,44 @@ class Svgdetect(object):
         return shift_list
 
     def _svg_b(self):
-        shift_list = list(map(int, [x.split()[1] for x in self._svg_sel.xpath('//path[starts-with(@d, "M0")]/@d').getall()]))
+        shift_list = list(
+            map(
+                int,
+                [
+                    x.split()[1]
+                    for x in self._svg_sel.xpath(
+                        '//path[starts-with(@d, "M0")]/@d'
+                    ).getall()
+                ],
+            )
+        )
         return shift_list
 
     def _find_in_svg(self, char):
         if char.isascii():
-            loc = re.search(char + r'{background:(.*?);}', self._css_content).group(1)
-            loc = list(map(abs, [float(x.strip('px')) for x in loc.split()]))
+            loc = re.search(char + r"{background:(.*?);}", self._css_content).group(1)
+            loc = list(map(abs, [float(x.strip("px")) for x in loc.split()]))
             index = int(loc[0] / 14)
 
             shift_list = self._svg_a() or self._svg_b()
-            row_index = shift_list.index(min(list(filter(lambda x: x > int(loc[1]), shift_list))))
+            row_index = shift_list.index(
+                min(filter(lambda x: x > int(loc[1]), shift_list))
+            )
 
-            text_str = self._svg_sel.xpath(f'//svg//text[{row_index + 1}]/text() | //svg//textpath[{row_index + 1}]/text()').getall()
+            text_str = self._svg_sel.xpath(
+                f"//svg//text[{row_index + 1}]/text() | //svg//textpath[{row_index + 1}]/text()"
+            ).getall()
 
-            return ''.join(text_str).strip()[index] or char
+            return "".join(text_str).strip()[index] or char
         else:
             return char
 
     def _clean(self, lst):
         lst = map(lambda x: x.strip(), lst)
         lst = filter(lambda x: len(x) != 0, lst)
-        lst = list(filter(lambda x: x.startswith(self.class_prefix) if x.isascii() else x, lst))
+        lst = list(
+            filter(lambda x: x.startswith(self.class_prefix) if x.isascii() else x, lst)
+        )
         return lst[:-1]
 
     def parse(self, char_list):
@@ -91,4 +107,4 @@ class Svgdetect(object):
             str: 解密后的文字
         """
         char_list = self._clean(char_list)
-        return ''.join(map(self._find_in_svg, char_list))
+        return "".join(map(self._find_in_svg, char_list))
