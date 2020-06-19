@@ -10,8 +10,9 @@ class Rosetta(object):
     """点评字体反爬破解"""
     def __init__(self, num_font_file, char_font_file):
         """
-        Paramters:
-
+        :Paramters:
+            num_font_file: 点评上用来替换数字的字体文件
+            char_font_file: 点评上用来替换中文的字体文件
         """
         MAPPING_FILE = "character"
         self.num_font = ttLib.TTFont(num_font_file)
